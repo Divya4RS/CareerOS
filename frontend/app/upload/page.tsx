@@ -44,7 +44,7 @@ export default function UploadPage() {
 
     try {
       const uploadRes = await fetch(
-        "http://127.0.0.1:8000/upload-resume",
+        "http://careeros-production-9e5d.up.railway.app/upload-resume",
         {
           method: "POST",
           body: formData,
@@ -54,7 +54,7 @@ export default function UploadPage() {
       const uploadData = await uploadRes.json();
 
       const atsRes = await fetch(
-        "http://127.0.0.1:8000/ats",
+        "http://careeros-production-9e5d.up.railway.app/ats",
         {
           method: "POST",
           headers: {
@@ -75,7 +75,7 @@ export default function UploadPage() {
       setSuggestions(atsData.suggestions || []);
 
       const interviewRes = await fetch(
-        "http://127.0.0.1:8000/interview",
+        "http://careeros-production-9e5d.up.railway.app/interview",
         {
           method: "POST",
           headers: {
@@ -91,7 +91,7 @@ export default function UploadPage() {
       setQuestions(interviewData.questions || []);
 
       const jobRes = await fetch(
-        "http://127.0.0.1:8000/job-match",
+        "http://careeros-production-9e5d.up.railway.app/job-match",
         {
           method: "POST",
           headers: {
@@ -107,7 +107,7 @@ export default function UploadPage() {
       setJobMatches(jobData.jobs || []);
 
       const roadmapRes = await fetch(
-        "http://127.0.0.1:8000/roadmap",
+        "http://careeros-production-9e5d.up.railway.app/roadmap",
         {
           method: "POST",
           headers: {
@@ -123,7 +123,7 @@ export default function UploadPage() {
       setRoadmap(roadmapData.roadmap || []);
 
       const rewriteRes = await fetch(
-        "http://127.0.0.1:8000/rewrite",
+        "http://careeros-production-9e5d.up.railway.app/rewrite",
         {
           method: "POST",
           headers: {
@@ -144,7 +144,7 @@ export default function UploadPage() {
       );
 
       const coverRes = await fetch(
-        "http://127.0.0.1:8000/cover-letter",
+        "http://careeros-production-9e5d.up.railway.app/cover-letter",
         {
           method: "POST",
           headers: {
@@ -161,7 +161,7 @@ export default function UploadPage() {
       setCoverLetter(coverData.cover_letter || "");
 
       await fetch(
-        "http://127.0.0.1:8000/save-report",
+        "http://careeros-production-9e5d.up.railway.app/save-report",
         {
           method: "POST",
           headers: {
@@ -178,7 +178,7 @@ export default function UploadPage() {
       const email = localStorage.getItem("user_email");
 
       const historyRes = await fetch(
-        `http://127.0.0.1:8000/history/${email}`
+        `http://careeros-production-9e5d.up.railway.app/history/${email}`
       );
 
       const historyData = await historyRes.json();

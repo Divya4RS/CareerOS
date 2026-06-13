@@ -10,7 +10,7 @@ export default function LoginPage() {
   const login = async () => {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/login",
+        "http://careeros-production-9e5d.up.railway.app/login",
         {
           method: "POST",
           headers: {

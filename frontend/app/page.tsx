@@ -6,7 +6,7 @@ export default function Home() {
   const [status, setStatus] = useState("Checking...");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/health")
+    fetch("https://careeros-production-9e5d.up.railway.app/health")
       .then((res) => res.json())
       .then((data) => {
         setStatus(data.status);

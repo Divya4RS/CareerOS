@@ -10,7 +10,7 @@ export default function SignupPage() {
   const signup = async () => {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/signup",
+        "http://careeros-production-9e5d.up.railway.app/signup",
         {
           method: "POST",
           headers: {

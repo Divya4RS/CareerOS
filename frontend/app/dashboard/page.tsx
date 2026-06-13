@@ -20,7 +20,7 @@ export default function DashboardPage() {
     setEmail(userEmail);
 
     fetch(
-      `http://127.0.0.1:8000/history/${userEmail}`
+      `http://careeros-production-9e5d.up.railway.app/history/${userEmail}`
     )
       .then((res) => res.json())
       .then((data) => {
