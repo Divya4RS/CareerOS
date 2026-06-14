@@ -10,7 +10,7 @@ export default function SignupPage() {
   const signup = async () => {
     try {
       const res = await fetch(
-        "http://careeros-production-9e5d.up.railway.app/signup",
+        "https://careeros-production-9e5d.up.railway.app/signup",
         {
           method: "POST",
           headers: {

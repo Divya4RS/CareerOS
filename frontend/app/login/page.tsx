@@ -10,7 +10,7 @@ export default function LoginPage() {
   const login = async () => {
     try {
       const res = await fetch(
-        "http://careeros-production-9e5d.up.railway.app/login",
+        "https://careeros-production-9e5d.up.railway.app/login",
         {
           method: "POST",
           headers: {
@@ -38,22 +38,17 @@ export default function LoginPage() {
           data.token
         );
 
-        window.location.href =
-          "/dashboard";
+        window.location.href = "/dashboard";
       }
     } catch (error) {
       console.error(error);
-      setMessage(
-        "Unable to connect to backend"
-      );
+      setMessage("Unable to connect to backend");
     }
   };
 
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center">
-
       <div className="bg-gray-900 p-8 rounded-lg w-[400px]">
-
         <h1 className="text-3xl font-bold mb-6">
           Login
         </h1>
@@ -90,9 +85,7 @@ export default function LoginPage() {
             {message}
           </p>
         )}
-
       </div>
-
     </main>
   );
 }
