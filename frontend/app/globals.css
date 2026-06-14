@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #030712;
+  --foreground: #f8fafc;
+  --card: rgba(17, 24, 39, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
@@ -23,18 +25,85 @@ html {
 }
 
 body {
-  background: #0a0a0a;
-  color: #ededed;
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   min-height: 100vh;
+  color: var(--foreground);
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59,130,246,0.15),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(168,85,247,0.12),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at bottom,
+      rgba(16,185,129,0.08),
+      transparent 35%
+    ),
+    #030712;
+
+  font-family:
+    var(--font-geist-sans),
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 a {
   text-decoration: none;
+  transition: all 0.25s ease;
 }
 
 button {
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+input,
+textarea {
+  transition: all 0.25s ease;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow:
+    0 0 0 1px #3b82f6,
+    0 0 25px rgba(59,130,246,0.25);
+}
+
+.card {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+}
+
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    #60a5fa,
+    #a855f7,
+    #06b6d4
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -46,10 +115,33 @@ button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: linear-gradient(
+    #3b82f6,
+    #8b5cf6
+  );
+
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: linear-gradient(
+    #60a5fa,
+    #a855f7
+  );
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease forwards;
 }
