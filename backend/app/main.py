@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.database import engine
+from app.models.user import Base as UserBase
+from app.models.resume import Base as ResumeBase
+
 from app.routes.upload import router as upload_router
 from app.routes.ats import router as ats_router
 from app.routes.rewrite import router as rewrite_router
@@ -17,6 +21,10 @@ app = FastAPI(
     title="CareerOS API",
     version="1.0.0"
 )
+
+# Create database tables automatically
+UserBase.metadata.create_all(bind=engine)
+ResumeBase.metadata.create_all(bind=engine)
 
 # CORS
 app.add_middleware(
