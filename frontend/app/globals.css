@@ -102,7 +102,7 @@ textarea:focus {
     #06b6d4
   );
 
-  -webkit-background-clip: text;
+  : text;-webkit-background-clip
   -webkit-text-fill-color: transparent;
 }
 

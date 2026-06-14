@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import jsPDF from "jspdf";
 
 type JobMatch = {
@@ -35,10 +35,10 @@ function SectionCard({
 }: {
   title: string;
   subtitle?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
+    <section className="rounded-[1.75rem] border border-white/10 bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
       <div className="border-b border-white/10 px-5 py-4 sm:px-6">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
         {subtitle ? (
@@ -47,6 +47,23 @@ function SectionCard({
       </div>
       <div className="px-5 py-5 sm:px-6">{children}</div>
     </section>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
+      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
+        {label}
+      </p>
+      <p className="mt-3 text-lg font-semibold text-white">{value}</p>
+    </div>
   );
 }
 
@@ -76,7 +93,15 @@ export default function UploadPage() {
     return getScoreTone(score);
   }, [score]);
 
-  const uploadResume = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const gaugeDashOffset = useMemo(() => {
+    const circumference = 2 * Math.PI * 78;
+    const pct = score ?? 0;
+    return circumference - (circumference * pct) / 100;
+  }, [score]);
+
+  const uploadResume = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -162,7 +187,9 @@ export default function UploadPage() {
         }),
       });
       const rewriteData = await rewriteRes.json();
-      setRewrittenText(rewriteData.rewritten_text || rewriteData.rewritten || "");
+      setRewrittenText(
+        rewriteData.rewritten_text || rewriteData.rewritten || ""
+      );
 
       const coverRes = await fetch(`${apiBase}/cover-letter`, {
         method: "POST",
@@ -314,16 +341,11 @@ export default function UploadPage() {
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Overall Score</p>
-                    <p className="mt-2 text-3xl font-bold">{score ?? "—"}</p>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Match Quality</p>
-                    <p className="mt-2 text-2xl font-semibold">
-                      {score !== null ? getScoreLabel(score) : "Upload a resume"}
-                    </p>
-                  </div>
+                  <StatCard label="Overall Score" value={`${score ?? "—"}`} />
+                  <StatCard
+                    label="Match Quality"
+                    value={score !== null ? getScoreLabel(score) : "Upload a resume"}
+                  />
                 </div>
               </div>
 
@@ -396,24 +418,79 @@ export default function UploadPage() {
 
                 <SectionCard
                   title="ATS Overview"
-                  subtitle="Score bar, match quality, and skill status."
+                  subtitle="Score ring, match quality, and skill status."
                 >
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-end justify-between">
-                      <div>
-                        <p className="text-sm text-slate-400">ATS Score</p>
-                        <p className="text-3xl font-bold text-white">{score}%</p>
+                  <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+                    <div className="flex items-center justify-center">
+                      <div className="relative h-52 w-52">
+                        <svg className="h-52 w-52 -rotate-90">
+                          <circle
+                            cx="104"
+                            cy="104"
+                            r="78"
+                            stroke="rgba(255,255,255,0.10)"
+                            strokeWidth="14"
+                            fill="none"
+                          />
+                          <circle
+                            cx="104"
+                            cy="104"
+                            r="78"
+                            stroke="url(#careerGradient)"
+                            strokeWidth="14"
+                            fill="none"
+                            strokeDasharray={2 * Math.PI * 78}
+                            strokeDashoffset={gaugeDashOffset}
+                            strokeLinecap="round"
+                            className="transition-all duration-700"
+                          />
+                          <defs>
+                            <linearGradient id="careerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" stopColor="#22d3ee" />
+                              <stop offset="50%" stopColor="#3b82f6" />
+                              <stop offset="100%" stopColor="#8b5cf6" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-5xl font-black text-white">{score}%</span>
+                          <span className="mt-2 text-xs uppercase tracking-[0.25em] text-slate-400">
+                            ATS Score
+                          </span>
+                        </div>
                       </div>
-                      <p className={`text-sm font-semibold ${getScoreTone(score)}`}>
-                        {getScoreLabel(score)}
-                      </p>
                     </div>
 
-                    <div className="h-4 w-full overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 transition-all duration-700"
-                        style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
-                      />
+                    <div className="flex flex-col justify-center gap-4">
+                      <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-slate-400">Match Quality</p>
+                          <p className={`text-sm font-semibold ${getScoreTone(score)}`}>
+                            {getScoreLabel(score)}
+                          </p>
+                        </div>
+                        <p className="mt-2 text-sm text-slate-300">
+                          {score >= 85
+                            ? "Your resume is highly aligned with this job description."
+                            : score >= 70
+                            ? "Your resume is a strong match, with a few improvements left."
+                            : score >= 50
+                            ? "You have a moderate match. Focus on the missing skills."
+                            : "This role needs more alignment. Use the roadmap and rewrite suggestions."}
+                        </p>
+                      </div>
+
+                      <div className="h-4 w-full overflow-hidden rounded-full bg-white/10">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 transition-all duration-700"
+                          style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+                        />
+                      </div>
+
+                      <p className="text-sm text-slate-400">
+                        {found.length} matched skills • {missing.length} missing skills
+                      </p>
                     </div>
                   </div>
                 </SectionCard>
@@ -423,15 +500,18 @@ export default function UploadPage() {
                     title="Matched Skills"
                     subtitle="Skills detected in both the resume and job description."
                   >
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                       {found.length > 0 ? (
                         found.map((skill) => (
-                          <span
+                          <div
                             key={skill}
-                            className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300"
+                            className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm text-emerald-300"
                           >
-                            {skill}
-                          </span>
+                            <p className="font-medium">{skill}</p>
+                            <div className="mt-2 h-2 rounded-full bg-emerald-400/20">
+                              <div className="h-2 w-[90%] rounded-full bg-emerald-400" />
+                            </div>
+                          </div>
                         ))
                       ) : (
                         <p className="text-sm text-slate-400">No matched skills found.</p>
@@ -443,15 +523,18 @@ export default function UploadPage() {
                     title="Missing Skills"
                     subtitle="The biggest gaps between your resume and the target role."
                   >
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                       {missing.length > 0 ? (
                         missing.map((skill) => (
-                          <span
+                          <div
                             key={skill}
-                            className="rounded-full border border-rose-400/20 bg-rose-500/10 px-4 py-2 text-sm text-rose-300"
+                            className="rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-sm text-rose-300"
                           >
-                            {skill}
-                          </span>
+                            <p className="font-medium">{skill}</p>
+                            <div className="mt-2 h-2 rounded-full bg-rose-400/20">
+                              <div className="h-2 w-[35%] rounded-full bg-rose-400" />
+                            </div>
+                          </div>
                         ))
                       ) : (
                         <p className="text-sm text-slate-400">No missing skills detected.</p>
@@ -459,6 +542,38 @@ export default function UploadPage() {
                     </div>
                   </SectionCard>
                 </div>
+
+                <SectionCard
+                  title="AI Insights"
+                  subtitle="Quick recruiter-style feedback from the analysis."
+                >
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4">
+                      <p className="text-sm font-semibold text-emerald-300">Strength</p>
+                      <p className="mt-2 text-sm text-slate-200">
+                        {found.length > 0
+                          ? `Strong alignment in ${found.slice(0, 3).join(", ")}.`
+                          : "No strong alignment detected yet."}
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4">
+                      <p className="text-sm font-semibold text-amber-300">Improve</p>
+                      <p className="mt-2 text-sm text-slate-200">
+                        {missing.length > 0
+                          ? `Add ${missing.slice(0, 3).join(", ")} to improve ATS compatibility.`
+                          : "Your resume is well matched. Focus on stronger project outcomes."}
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4">
+                      <p className="text-sm font-semibold text-cyan-300">Next Move</p>
+                      <p className="mt-2 text-sm text-slate-200">
+                        Use the rewrite and interview sections to prepare a better application.
+                      </p>
+                    </div>
+                  </div>
+                </SectionCard>
 
                 <div className="grid gap-6 xl:grid-cols-2">
                   <SectionCard
